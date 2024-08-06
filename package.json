@@ -12,7 +12,9 @@
   "devDependencies": {
     "@types/node": "^22.1.0",
     "git-commit-msg-linter": "^5.0.8",
+    "husky": "^9.1.4",
     "i": "^0.3.7",
+    "lint-staged": "^15.2.8",
     "ts-standard": "^12.0.2",
     "typescript": "^5.5.4"
   },
