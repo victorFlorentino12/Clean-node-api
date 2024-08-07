@@ -1,27 +1,25 @@
 {
-    "extends": "standard-with-typescript",
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "./tsconfig.json",
-      "sourceType": "module"
-    },
-    "plugins": ["@typescript-eslint"],
-    "rules": {
-      "@typescript-eslint/explicit-function-return-type": "off", // Desativa a exigência de declarar o tipo de retorno das funções
-      "@typescript-eslint/no-explicit-any": "warn", // Emite um aviso ao usar "any"
-      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // Erro em variáveis não utilizadas, mas permite prefixar com "_"
-      "@typescript-eslint/no-inferrable-types": "off", // Desativa a exigência de remoção de tipos inferidos
-      "@typescript-eslint/consistent-type-definitions": ["error", "interface"], // Enforce "interface" over "type" for object types
-      "@typescript-eslint/no-non-null-assertion": "warn", // Aviso ao usar "!"
-      "@typescript-eslint/explicit-module-boundary-types": "off", // Desativa a exigência de declarar tipos nas fronteiras do módulo
-      "@typescript-eslint/strict-boolean-expressions": "off", // Desativa a exigência de checagens booleanas estritas
-      "no-console": "warn", // Emite um aviso ao usar "console.log"
-      "no-debugger": "error", // Erro ao usar "debugger"
-      "curly": ["error", "multi-line"], // Exige chaves para blocos de várias linhas
-      "eqeqeq": ["error", "always"], // Exige uso de === e !==
-      "no-var": "error", // Proíbe o uso de "var"
-      "prefer-const": "error", // Exige o uso de "const" quando possível
-      "quotes": ["error", "single", { "avoidEscape": true }] // Exige o uso de aspas simples
-    }
+  "extends": "standard-with-typescript",
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off", // Desativa a exigência de declarar o tipo de retorno das funções
+    "@typescript-eslint/no-explicit-any": "warn", // Emite um aviso ao usar "any"
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // Erro em variáveis não utilizadas, mas permite prefixar com "_"
+    "@typescript-eslint/no-inferrable-types": "off", // Desativa a exigência de remoção de tipos inferidos
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"], // Enforce "interface" over "type" for object types
+    "@typescript-eslint/no-non-null-assertion": "warn", // Aviso ao usar "!"
+    "@typescript-eslint/explicit-module-boundary-types": "off", // Desativa a exigência de declarar tipos nas fronteiras do módulo
+    "@typescript-eslint/strict-boolean-expressions": "off", // Desativa a exigência de checagens booleanas estritas
+    "no-console": "warn", // Emite um aviso ao usar "console.log"
+    "no-debugger": "error", // Erro ao usar "debugger"
+    "curly": ["error", "multi-line"], // Exige chaves para blocos de várias linhas
+    "eqeqeq": ["error", "always"], // Exige uso de === e !==
+    "no-var": "error", // Proíbe o uso de "var"
+    "prefer-const": "error" // Exige o uso de "const" quando possível
   }
-  
+}
