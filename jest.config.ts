@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+import type { Config } from 'jest'
 
 const config: Config = {
   roots: ['<rootDir>/src'],
@@ -9,6 +9,6 @@ const config: Config = {
   transform: {
     '^.+\\.ts$': 'ts-jest'
   }
-};
+}
 
 export default config;
