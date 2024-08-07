@@ -1,3 +1,5 @@
+/* eslint-disable eol-last */
+/* eslint-disable @typescript-eslint/semi */
 import type { Config } from 'jest'
 
 const config: Config = {
