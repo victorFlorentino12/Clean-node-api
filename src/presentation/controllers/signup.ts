@@ -1,5 +1,6 @@
+import type { httpRequest, httpResponse } from '../protocols/http'
 export class SingUpController {
-  hundle (_httpRequest: any): any {
+  hundle (_httpRequest: httpRequest): httpResponse {
     if (!_httpRequest.body.name) {
       return {
         statusCode: 400,
@@ -11,6 +12,10 @@ export class SingUpController {
         statusCode: 400,
         body: new Error('Missing param: email')
       }
+    }
+    return {
+      statusCode: 400,
+      body: 'Erro'
     }
   }
 }
