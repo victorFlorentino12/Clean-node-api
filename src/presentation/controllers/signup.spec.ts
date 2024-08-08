@@ -16,8 +16,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorMissingParam('name'))
   })
-})
-describe('singUp Controller', () => {
   test('shold return 400 if no email is provided', () => {
     const sut = new SingUpController()
     const httpRequest = {
@@ -30,5 +28,31 @@ describe('singUp Controller', () => {
     const httpResponse: httpResponse = sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorMissingParam('email'))
+  })
+  test('Shold returm 400 if no password is provide', () => {
+    const sut = new SingUpController()
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: '12345@fdew',
+        passwordConfirmation: '12345'
+      }
+    }
+    const httpResponse = sut.hundle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new ErrorMissingParam('password'))
+  })
+  test('Shold return 400 if no passwordConfimation in provide', () => {
+    const sut = new SingUpController()
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: '12345@fdew',
+        password: '12345'
+      }
+    }
+    const httpResponse = sut.hundle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new ErrorMissingParam('passwordConfirmation'))
   })
 })
