@@ -1,21 +1,14 @@
 import type { httpRequest, httpResponse } from '../protocols/http'
+import { ErrorMissingParam } from '../error/error-missing-params'
+import { badRequest } from '../helpers/http-helper'
 export class SingUpController {
   hundle (_httpRequest: httpRequest): httpResponse {
     if (!_httpRequest.body.name) {
-      return {
-        statusCode: 400,
-        body: new Error('Missing param: name')
-      }
+      return badRequest(new ErrorMissingParam('name'))
     }
     if (!_httpRequest.body.email) {
-      return {
-        statusCode: 400,
-        body: new Error('Missing param: email')
-      }
+      return badRequest(new ErrorMissingParam('email'))
     }
-    return {
-      statusCode: 400,
-      body: 'Erro'
-    }
+    return badRequest(new ErrorMissingParam('erro'))
   }
 }
