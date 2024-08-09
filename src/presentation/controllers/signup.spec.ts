@@ -92,4 +92,18 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorInvalidParam('email'))
   })
+  test('Shold return 400 if invalid email provide', () => {
+    const { sut, emailValidatorStub } = makerSut()
+    const spyRequest = jest.spyOn(emailValidatorStub, 'isValid')
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: 'any_12345@fdew.com',
+        password: '12345',
+        passwordConfirmation: '12345'
+      }
+    }
+    sut.hundle(httpRequest)
+    expect(spyRequest).toHaveBeenCalledWith('any_12345@fdew.com')
+  })
 })
