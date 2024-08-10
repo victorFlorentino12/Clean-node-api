@@ -9,15 +9,25 @@ interface MockTypes {
   sut: SingUpController
   emailValidatorStub: EmailValidator
 }
-
-const makerSut = (): MockTypes => {
+const makerEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      console.log(email)
+    isValid (_email: string): boolean {
       return true
     }
   }
-  const emailValidatorStub = new EmailValidatorStub()
+  return new EmailValidatorStub()
+}
+const makerEmailValidatorWithError = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (_email: string): boolean {
+      throw new Error()
+    }
+  }
+  return new EmailValidatorStub()
+}
+
+const makerSut = (): MockTypes => {
+  const emailValidatorStub = makerEmailValidator()
   const sut = new SingUpController(emailValidatorStub)
   return {
     sut,
@@ -108,13 +118,7 @@ describe('SignUp Controller', () => {
     expect(spyRequest).toHaveBeenCalledWith('any_12345@fdew.com')
   })
   test('Shold return 500 if emailValidator return throw', () => {
-    class EmailValidatorStub implements EmailValidator {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      isValid (email: string): boolean {
-        throw new Error()
-      }
-    }
-    const emailValidatorStub = new EmailValidatorStub()
+    const emailValidatorStub = makerEmailValidatorWithError()
     const sut = new SingUpController(emailValidatorStub)
     const httpRequest = {
       body: {
