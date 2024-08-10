@@ -3,6 +3,7 @@ import type { httpRequest, httpResponse } from '../protocols/http'
 import { ErrorMissingParam } from '../error/error-missing-params'
 import { ErrorInvalidParam } from '../error/error-invalid-param'
 import type { EmailValidator } from '../protocols/email-validator'
+import { ServerError } from '../error/server-error'
 
 interface MockTypes {
   sut: SingUpController
@@ -105,5 +106,26 @@ describe('SignUp Controller', () => {
     }
     sut.hundle(httpRequest)
     expect(spyRequest).toHaveBeenCalledWith('any_12345@fdew.com')
+  })
+  test('Shold return 500 if emailValidator return throw', () => {
+    class EmailValidatorStub implements EmailValidator {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      isValid (email: string): boolean {
+        throw new Error()
+      }
+    }
+    const emailValidatorStub = new EmailValidatorStub()
+    const sut = new SingUpController(emailValidatorStub)
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: 'any_12345@fdew.com',
+        password: '12345',
+        passwordConfirmation: '12345'
+      }
+    }
+    const httpResponse = sut.hundle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
