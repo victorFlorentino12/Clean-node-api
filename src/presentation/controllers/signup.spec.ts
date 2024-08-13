@@ -2,10 +2,12 @@ import { SingUpController } from './signup'
 import type { httpRequest, httpResponse } from '../protocols/http'
 import type { EmailValidator } from '../protocols/email-validator'
 import { ErrorInvalidParam, ErrorMissingParam, PasswordDifferentError, ServerError } from '../error/index'
-
+import type { AddAccount, AddAccountModel } from '../../domain/usercase/add-account'
+import type { AccountModel } from '../../domain/model/account-model'
 interface MockTypes {
   sut: SingUpController
   emailValidatorStub: EmailValidator
+  addAccountStub: AddAccount
 }
 const makerEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -23,13 +25,28 @@ const makerEmailValidatorWithError = (): EmailValidator => {
   }
   return new EmailValidatorStub()
 }
-
+const makerAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    add (_account: AddAccountModel): AccountModel {
+      const accountFake = {
+        id: 'valid_id',
+        name: 'florentino',
+        email: 'any_12345@fdew.com',
+        password: '12345'
+      }
+      return accountFake
+    }
+  }
+  return new AddAccountStub()
+}
 const makerSut = (): MockTypes => {
+  const addAccountStub = makerAddAccount()
   const emailValidatorStub = makerEmailValidator()
-  const sut = new SingUpController(emailValidatorStub)
+  const sut = new SingUpController(emailValidatorStub, addAccountStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    addAccountStub
   }
 }
 
@@ -117,7 +134,8 @@ describe('SignUp Controller', () => {
   })
   test('Shold return 500 if emailValidator return throw', () => {
     const emailValidatorStub = makerEmailValidatorWithError()
-    const sut = new SingUpController(emailValidatorStub)
+    const addAccountStub = makerAddAccount()
+    const sut = new SingUpController(emailValidatorStub, addAccountStub)
     const httpRequest = {
       body: {
         name: 'florentino',
@@ -143,5 +161,23 @@ describe('SignUp Controller', () => {
     const httpResponse = sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new PasswordDifferentError())
+  })
+  test('Shold Call addAccount with values corrects', () => {
+    const { sut, addAccountStub } = makerSut()
+    const spyAdd = jest.spyOn(addAccountStub, 'add')
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: 'any_12345@fdew.com',
+        password: '12345',
+        passwordConfirmation: '12345'
+      }
+    }
+    sut.hundle(httpRequest)
+    expect(spyAdd).toHaveBeenCalledWith({
+      name: 'florentino',
+      email: 'any_12345@fdew.com',
+      password: '12345'
+    })
   })
 })
