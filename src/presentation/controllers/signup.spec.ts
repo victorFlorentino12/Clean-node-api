@@ -1,9 +1,7 @@
 import { SingUpController } from './signup'
 import type { httpRequest, httpResponse } from '../protocols/http'
-import { ErrorMissingParam } from '../error/error-missing-params'
-import { ErrorInvalidParam } from '../error/error-invalid-param'
 import type { EmailValidator } from '../protocols/email-validator'
-import { ServerError } from '../error/server-error'
+import { ErrorInvalidParam, ErrorMissingParam, PasswordDifferentError, ServerError } from '../error/index'
 
 interface MockTypes {
   sut: SingUpController
@@ -131,5 +129,19 @@ describe('SignUp Controller', () => {
     const httpResponse = sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+  test('Shold return 400 if password is diferent the passwordConfirme', () => {
+    const { sut } = makerSut()
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: 'any_12345@fdew.com',
+        password: '12345',
+        passwordConfirmation: '12345_different'
+      }
+    }
+    const httpResponse = sut.hundle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new PasswordDifferentError())
   })
 })
