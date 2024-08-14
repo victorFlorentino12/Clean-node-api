@@ -1,9 +1,8 @@
 import { SingUpController } from './signup'
-import type { httpRequest, httpResponse } from '../protocols/http'
-import type { EmailValidator } from '../protocols/email-validator'
-import { ErrorInvalidParam, ErrorMissingParam, PasswordDifferentError, ServerError } from '../error/index'
-import type { AddAccount, AddAccountModel } from '../../domain/usercase/add-account'
-import type { AccountModel } from '../../domain/model/account-model'
+import type { httpRequest, httpResponse, EmailValidator } from './singup-protocols'
+import { ErrorInvalidParam, ErrorMissingParam, PasswordDifferentError, ServerError } from '../../error/index'
+import type { AddAccount, AddAccountModel } from '../../../domain/usercase/add-account'
+import type { AccountModel } from '../../../domain/model/account-model'
 interface MockTypes {
   sut: SingUpController
   emailValidatorStub: EmailValidator
