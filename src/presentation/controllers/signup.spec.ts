@@ -29,10 +29,10 @@ const makerAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     add (_account: AddAccountModel): AccountModel {
       const accountFake = {
-        id: 'valid_id',
-        name: 'florentino',
-        email: 'any_12345@fdew.com',
-        password: '12345'
+        id: 'id_valid',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password'
       }
       return accountFake
     }
@@ -178,6 +178,25 @@ describe('SignUp Controller', () => {
       name: 'florentino',
       email: 'any_12345@fdew.com',
       password: '12345'
+    })
+  })
+  test('Should SignUpControler return 200 if values are corrects', () => {
+    const { sut } = makerSut()
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password'
+      }
+    }
+    const httpResponse = sut.hundle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual({
+      id: 'id_valid',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
     })
   })
 })
