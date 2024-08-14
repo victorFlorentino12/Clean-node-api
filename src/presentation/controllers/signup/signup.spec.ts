@@ -1,10 +1,10 @@
-import { SingUpController } from './signup'
+import { SignUpController } from './signup'
 import type { httpRequest, httpResponse, EmailValidator } from './singup-protocols'
 import { ErrorInvalidParam, ErrorMissingParam, PasswordDifferentError, ServerError } from '../../error/index'
 import type { AddAccount, AddAccountModel } from '../../../domain/usercase/add-account'
 import type { AccountModel } from '../../../domain/model/account-model'
 interface MockTypes {
-  sut: SingUpController
+  sut: SignUpController
   emailValidatorStub: EmailValidator
   addAccountStub: AddAccount
 }
@@ -41,7 +41,7 @@ const makerAddAccount = (): AddAccount => {
 const makerSut = (): MockTypes => {
   const addAccountStub = makerAddAccount()
   const emailValidatorStub = makerEmailValidator()
-  const sut = new SingUpController(emailValidatorStub, addAccountStub)
+  const sut = new SignUpController(emailValidatorStub, addAccountStub)
   return {
     sut,
     emailValidatorStub,
@@ -134,7 +134,7 @@ describe('SignUp Controller', () => {
   test('Shold return 500 if emailValidator return throw', async () => {
     const emailValidatorStub = makerEmailValidatorWithError()
     const addAccountStub = makerAddAccount()
-    const sut = new SingUpController(emailValidatorStub, addAccountStub)
+    const sut = new SignUpController(emailValidatorStub, addAccountStub)
     const httpRequest = {
       body: {
         name: 'florentino',

@@ -3,7 +3,7 @@ import { ErrorMissingParam, ErrorInvalidParam, PasswordDifferentError } from '..
 import { badRequest, serverError } from '../../helpers/http-helper'
 import type { Controller, EmailValidator, httpRequest, httpResponse } from './singup-protocols'
 
-export class SingUpController implements Controller {
+export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator
   private readonly addAccount: AddAccount
 
