@@ -26,14 +26,14 @@ const makerEmailValidatorWithError = (): EmailValidator => {
 }
 const makerAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    add (_account: AddAccountModel): AccountModel {
+    async add (_account: AddAccountModel): Promise<AccountModel> {
       const accountFake = {
         id: 'id_valid',
         name: 'valid_name',
         email: 'valid_email',
         password: 'valid_password'
       }
-      return accountFake
+      return await new Promise(resolve => { resolve(accountFake) })
     }
   }
   return new AddAccountStub()
@@ -50,7 +50,7 @@ const makerSut = (): MockTypes => {
 }
 
 describe('SignUp Controller', () => {
-  test('Shold return 400 if no name is provided', () => {
+  test('Shold return 400 if no name is provided', async () => {
     const { sut } = makerSut()
     const httpRequest: httpRequest = {
       body: {
@@ -59,11 +59,11 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    const httpResponse: httpResponse = sut.hundle(httpRequest)
+    const httpResponse: httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorMissingParam('name'))
   })
-  test('shold return 400 if no email is provided', () => {
+  test('shold return 400 if no email is provided', async () => {
     const { sut } = makerSut()
     const httpRequest = {
       body: {
@@ -72,11 +72,11 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    const httpResponse: httpResponse = sut.hundle(httpRequest)
+    const httpResponse: httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorMissingParam('email'))
   })
-  test('Shold returm 400 if no password is provide', () => {
+  test('Shold returm 400 if no password is provide', async () => {
     const { sut } = makerSut()
     const httpRequest = {
       body: {
@@ -85,11 +85,11 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    const httpResponse = sut.hundle(httpRequest)
+    const httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorMissingParam('password'))
   })
-  test('Shold return 400 if no passwordConfimation in provide', () => {
+  test('Shold return 400 if no passwordConfimation in provide', async () => {
     const { sut } = makerSut()
     const httpRequest = {
       body: {
@@ -98,11 +98,11 @@ describe('SignUp Controller', () => {
         password: '12345'
       }
     }
-    const httpResponse = sut.hundle(httpRequest)
+    const httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorMissingParam('passwordConfirmation'))
   })
-  test('Shold return 400 if invalid email provide', () => {
+  test('Shold return 400 if invalid email provide', async () => {
     const { sut, emailValidatorStub } = makerSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValue(false)
     const httpRequest = {
@@ -113,11 +113,11 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    const httpResponse = sut.hundle(httpRequest)
+    const httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new ErrorInvalidParam('email'))
   })
-  test('Shold return 400 if invalid email provide', () => {
+  test('Shold return 400 if invalid email provide', async () => {
     const { sut, emailValidatorStub } = makerSut()
     const spyRequest = jest.spyOn(emailValidatorStub, 'isValid')
     const httpRequest = {
@@ -128,10 +128,10 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    sut.hundle(httpRequest)
+    await sut.hundle(httpRequest)
     expect(spyRequest).toHaveBeenCalledWith('any_12345@fdew.com')
   })
-  test('Shold return 500 if emailValidator return throw', () => {
+  test('Shold return 500 if emailValidator return throw', async () => {
     const emailValidatorStub = makerEmailValidatorWithError()
     const addAccountStub = makerAddAccount()
     const sut = new SingUpController(emailValidatorStub, addAccountStub)
@@ -143,11 +143,28 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    const httpResponse = sut.hundle(httpRequest)
+    const httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
-  test('Shold return 400 if password is diferent the passwordConfirme', () => {
+  test('Shold return 500 if addAccount return throw', async () => {
+    const { sut, addAccountStub } = makerSut()
+    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => { reject(new Error()) })
+    })
+    const httpRequest = {
+      body: {
+        name: 'florentino',
+        email: 'any_12345@fdew.com',
+        password: '12345',
+        passwordConfirmation: '12345'
+      }
+    }
+    const httpResponse = await sut.hundle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
+  test('Shold return 400 if password is diferent the passwordConfirme', async () => {
     const { sut } = makerSut()
     const httpRequest = {
       body: {
@@ -157,11 +174,11 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345_different'
       }
     }
-    const httpResponse = sut.hundle(httpRequest)
+    const httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new PasswordDifferentError())
   })
-  test('Shold Call addAccount with values corrects', () => {
+  test('Shold Call addAccount with values corrects', async () => {
     const { sut, addAccountStub } = makerSut()
     const spyAdd = jest.spyOn(addAccountStub, 'add')
     const httpRequest = {
@@ -172,14 +189,14 @@ describe('SignUp Controller', () => {
         passwordConfirmation: '12345'
       }
     }
-    sut.hundle(httpRequest)
+    await sut.hundle(httpRequest)
     expect(spyAdd).toHaveBeenCalledWith({
       name: 'florentino',
       email: 'any_12345@fdew.com',
       password: '12345'
     })
   })
-  test('Should SignUpControler return 200 if values are corrects', () => {
+  test('Should SignUpControler return 200 if values are corrects', async () => {
     const { sut } = makerSut()
     const httpRequest = {
       body: {
@@ -189,7 +206,7 @@ describe('SignUp Controller', () => {
         passwordConfirmation: 'valid_password'
       }
     }
-    const httpResponse = sut.hundle(httpRequest)
+    const httpResponse = await sut.hundle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({
       id: 'id_valid',

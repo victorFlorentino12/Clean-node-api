@@ -12,7 +12,7 @@ export class SingUpController implements Controller {
     this.addAccount = addAccount
   }
 
-  hundle (_httpRequest: httpRequest): httpResponse {
+  async hundle (_httpRequest: httpRequest): Promise<httpResponse> {
     try {
       const params = ['name', 'email', 'password', 'passwordConfirmation']
       for (const value of params) {
@@ -29,7 +29,7 @@ export class SingUpController implements Controller {
       if (password !== passwordConfirmation) {
         return badRequest(new PasswordDifferentError())
       }
-      const account = this.addAccount.add({
+      const account = await this.addAccount.add({
         name,
         email,
         password
