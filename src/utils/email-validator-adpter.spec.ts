@@ -32,4 +32,11 @@ describe('EmailValidatorAdapter', () => {
     const isValid = emailValidatorAdapterStub.isValid('valid_email@email.com')
     expect(isValid).toEqual(true)
   })
+  test('Shold EmailValidatorAdapter be call with correct email', () => {
+    const sut = makerStub()
+    const emailValidatorAdapterStub = sut.EmailValidatorAdapterStub
+    const isEmail = jest.spyOn(validator, 'isEmail')
+    emailValidatorAdapterStub.isValid('any_email@email.com')
+    expect(isEmail).toHaveBeenCalledWith('any_email@email.com')
+  })
 })
