@@ -1,3 +1,4 @@
+import validator from 'validator'
 import type { EmailValidator } from '../presentation/controllers/signup/singup-protocols'
 import { EmailValidatorAdapter } from './email-validator-adapter'
 
@@ -11,13 +12,18 @@ const makerStub = (): StubType => {
     EmailValidatorAdapterStub
   }
 }
+jest.mock('validator', () => ({
+  isEmail (): boolean {
+    return true
+  }
+}))
 
 describe('EmailValidatorAdapter', () => {
   test('Should EmailValidatorAdapter return false if email no valid', () => {
     const sut = makerStub()
     const emailValidatorAdapterStub = sut.EmailValidatorAdapterStub
-    jest.spyOn(emailValidatorAdapterStub, 'isValid').mockReturnValue(false)
-    const isValid = emailValidatorAdapterStub.isValid('invalid_email@email.com')
+    jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false)
+    const isValid = emailValidatorAdapterStub.isValid('invalid_email@emailcom')
     expect(isValid).toEqual(false)
   })
   test('Shold EmailValidatorAdapter return true if email is valid', () => {
