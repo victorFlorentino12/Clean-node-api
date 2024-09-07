@@ -1,8 +1,6 @@
-import type { AddAccount } from '../../../domain/usercase/add-account'
-import { DbAddAccount } from './db-add-account'
-import type { Encrypt } from '../../protocols/encrypt'
-
-class EncryptStub {
+import type { AddAccount, Encrypt } from './db-add-account-protocols'
+import { DbAddAccount } from './db-add-account-protocols'
+class EncryptStub implements Encrypt {
   async encrypt (_value: string): Promise<string> {
     return await new Promise(resolve => { resolve('hashad_password') })
   }
