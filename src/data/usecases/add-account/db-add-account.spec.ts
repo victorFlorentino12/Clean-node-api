@@ -56,4 +56,19 @@ describe('DbAddAccount Usercase', () => {
       password: 'hashad_password'
     })
   })
+  test('Should calss addAccountRepository return values correct', async () => {
+    const { sut } = makerStub()
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+    const account = await sut.add(accountData)
+    expect(account).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashad_password'
+    })
+  })
 })
